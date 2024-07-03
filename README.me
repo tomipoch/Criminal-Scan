@@ -1,0 +1,75 @@
+# Proyecto Criminal Mobil
+
+Este proyecto es una aplicación móvil desarrollada con React Native utilizando la tecnología Expo.
+
+## Requisitos previos
+
+Antes de comenzar, asegúrate de tener instalados los siguientes componentes en tu sistema:
+
+- [Node.js](https://nodejs.org/) (incluye npm)
+- [Git](https://git-scm.com/)
+- [Expo CLI](https://docs.expo.dev/get-started/installation/)
+
+## Instalación
+
+Sigue estos pasos para inicializar el proyecto y ponerlo en marcha.
+
+### Clonar el repositorio
+
+Primero, clona el repositorio a tu máquina local:
+
+```bash
+git clone https://github.com/usuario/proyecto-criminal-mobil.git
+cd proyecto-criminal-mobil
+
+**instalar dependencias
+npx expo install react-dom react-native-web @expo/metro-runtime
+
+**instalar nativewind
+npm install nativewind
+npm install --save-dev tailwindcss@3.3.2
+
+*iniciar tailwind para crear archivos de config
+npx tailwindcss init
+
+**configurar nativewind y babel
+// tailwind.config.js
+
+module.exports = {
+- content: [],
++ content: ["./App.{js,jsx,ts,tsx}", "./src/**/*.{js,jsx,ts,tsx}"],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+
+//babel.config.js
+module.exports = function(api) {
+  api.cache(true);
+  return {
+    presets: ['babel-preset-expo'],
+    plugins: ["nativewind/babel"],
+  };
+};
+
+*Instalar dependencias necesarias
+npm install ""@paquete
+
+    "@expo/metro-runtime": "~3.2.1",
+    "@react-navigation/bottom-tabs": "^6.5.20",
+    "@react-navigation/native-stack": "^6.9.26",
+    "expo": "~51.0.9",
+    "expo-status-bar": "~1.12.1",
+    "nativewind": "^2.0.11",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-native": "0.74.1",
+    "react-native-gesture-handler": "^2.16.2",
+    "react-native-linear-gradient": "^2.8.3",
+    "react-native-safe-area-context": "^4.10.3",
+    "react-native-screens": "^3.31.1",
+    "react-native-web": "^0.19.12"
+
+*inciar expo
+npx expo start

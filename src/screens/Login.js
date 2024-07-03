@@ -56,7 +56,7 @@ const Login = ({ navigation }) => {
     <View className='flex-1'>
       <StatusBar style="auto" />
       <View className='flex-1 justify-center items-center'>
-        <Image source={require('../assets/icon.png')} style={{ width: 100, height: 100, position: 'absolute', top: '18%' }} />
+        <Image source={require('../../assets/icon.png')} style={{ width: 100, height: 100, position: 'absolute', top: '18%' }} />
         <View className='w-4/5 justify-center items-center'>
           {error ? <Text style={styles.errorText}>{error}</Text> : null}
           <TextInput

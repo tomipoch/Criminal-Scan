@@ -9,7 +9,7 @@ const Bienvenida = ({ navigation }) => {
       <View className='items-center'>
         <Image
           className='w-32 h-32 mt-6'
-          source={require('../assets/icon.png')}
+          source={require('../../assets/icon.png')}
         />
         <Text className='text-[#007328] text-[50px] font-bold'>Criminal</Text>
         <Text className='text-[40px]'>Scan</Text>
