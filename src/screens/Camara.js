@@ -105,6 +105,38 @@ const Camara = () => {
     }
   };
 
+  const renderApiResponse = () => {
+    if (!apiResponse) {
+      return null;
+    }
+    
+    if (apiResponse.error || !apiResponse.personaconantecedentes) {
+      return <StyledText className="text-red-600">Imagen no encontrada</StyledText>;
+    }
+
+    return (
+      <>
+        <StyledText className="text-gray-800">
+          <Text className="font-bold">Nombre:</Text> {apiResponse.personaconantecedentes.persona?.nombre || 'N/A'} {apiResponse.personaconantecedentes.persona?.apellido || ''}
+        </StyledText>
+        <StyledText className="text-gray-800">
+          <Text className="font-bold">Fecha de Nacimiento:</Text> {apiResponse.personaconantecedentes.persona?.fechaDeNacimiento || 'N/A'}
+        </StyledText>
+        <StyledText className="text-gray-800">
+          <Text className="font-bold">Dirección:</Text> {apiResponse.personaconantecedentes.persona?.direccion || 'N/A'}
+        </StyledText>
+        <StyledText className="text-gray-800">
+          <Text className="font-bold">Antecedentes:</Text>
+          {apiResponse.antecedentes?.length > 0
+            ? apiResponse.antecedentes.map((antecedente, idx) => (
+              <Text key={idx}>{antecedente.descripcion}{'\n'}</Text>
+            ))
+            : 'N/A'}
+        </StyledText>
+      </>
+    );
+  };
+
   return (
     <ScrollView>
       <StyledSafeAreaView className="flex-1 justify-center items-center p-6 w-full bg-white">
@@ -123,25 +155,7 @@ const Camara = () => {
           {isLoading ? (
             <ActivityIndicator size="large" color="#0000ff" />
           ) : (
-            <>
-              <StyledText className="text-gray-800">
-                <Text className="font-bold">Nombre:</Text> {apiResponse?.personaconantecedentes?.persona?.nombre || 'N/A'} {apiResponse?.personaconantecedentes?.persona?.apellido || ''}
-              </StyledText>
-              <StyledText className="text-gray-800">
-                <Text className="font-bold">Fecha de Nacimiento:</Text> {apiResponse?.personaconantecedentes?.persona?.fechaDeNacimiento || 'N/A'}
-              </StyledText>
-              <StyledText className="text-gray-800">
-                <Text className="font-bold">Dirección:</Text> {apiResponse?.personaconantecedentes?.persona?.direccion || 'N/A'}
-              </StyledText>
-              <StyledText className="text-gray-800">
-                <Text className="font-bold">Antecedentes:</Text>
-                {apiResponse?.antecedentes?.length > 0
-                  ? apiResponse.antecedentes.map((antecedente, idx) => (
-                    <Text key={idx}>{antecedente.descripcion}{'\n'}</Text>
-                  ))
-                  : 'N/A'}
-              </StyledText>
-            </>
+            renderApiResponse()
           )}
         </StyledView>
         <StyledView className="flex flex-column justify-around w-full p-6 rounded-2xl gap-6">
@@ -158,3 +172,4 @@ const Camara = () => {
 };
 
 export default Camara;
+
