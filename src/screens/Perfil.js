@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { SafeAreaView, View, Text, TouchableOpacity, Modal, Pressable } from 'react-native';
 import { styled } from 'nativewind';
 import Feather from '@expo/vector-icons/Feather';
+import CerrarSesionButton from '../components/CerrarSesionButton';
 
 const StyledSafeAreaView = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -10,7 +11,7 @@ const StyledTouchableOpacity = styled(TouchableOpacity);
 const StyledModal = styled(Modal);
 const StyledPressable = styled(Pressable);
 
-const Perfil = () => {
+const Perfil = ( { navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const usuario = {
@@ -64,7 +65,7 @@ const Perfil = () => {
           </StyledView>
           <StyledView>
             <StyledText className="font-bold">Configuración de Perfil</StyledText>
-            <StyledText className="text-gray-600">Ve y modifica tu usuario</StyledText>
+            <StyledText className="text-gray-600">Ver y modificar usuario</StyledText>
           </StyledView>
         </StyledTouchableOpacity>
 
@@ -74,7 +75,7 @@ const Perfil = () => {
           </StyledView>
           <StyledView>
             <StyledText className="font-bold">Privacidad</StyledText>
-            <StyledText className="text-gray-600">Cambia tu contraseña</StyledText>
+            <StyledText className="text-gray-600">Cambiar tu contraseña</StyledText>
           </StyledView>
         </StyledTouchableOpacity>
 
@@ -89,9 +90,7 @@ const Perfil = () => {
         </StyledTouchableOpacity>
       </StyledView>
 
-      <StyledTouchableOpacity className="bg-green-600 rounded-2xl p-4 mt-3 w-11/12 items-center">
-        <StyledText className="text-white font-bold">Cerrar Sesión</StyledText>
-      </StyledTouchableOpacity>
+      <CerrarSesionButton navigation={navigation} />
 
       {/* Pop Up Acerca de */}
       <StyledModal
