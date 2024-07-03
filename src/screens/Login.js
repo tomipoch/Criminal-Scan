@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { ApiKeyContext } from '../components/ApiKey';
 
@@ -43,6 +43,7 @@ const Login = ({ navigation }) => {
     setLoading(false);
 
     if (response && response.APIKEY) {
+      
       console.log("Api Key: ", response.APIKEY);
       setApiKey(response.APIKEY);
       navigation.replace('Home');
@@ -53,14 +54,17 @@ const Login = ({ navigation }) => {
   };
 
   return (
-    <View className='flex-1'>
+    <KeyboardAvoidingView
+      className="flex-1 justify-center bg-white"
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
       <StatusBar style="auto" />
-      <View className='flex-1 justify-center items-center'>
-        <Image source={require('../../assets/icon.png')} style={{ width: 100, height: 100, position: 'absolute', top: '18%' }} />
-        <View className='w-4/5 justify-center items-center'>
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      <View className="flex-1 justify-center items-center">
+        <View className="w-4/5 justify-center items-center">
+          <Image source={require('../../assets/icon.png')} className="w-24 h-24 mb-6" />
+          {error ? <Text className="text-red-500 mb-2">{error}</Text> : null}
           <TextInput
-            className='w-full h-12 px-4 mb-4 border border-gray-300 bg-white rounded-lg'
+            className="w-full h-12 px-4 mb-4 border border-gray-300 bg-gray-100 rounded-lg"
             placeholder="Correo Electrónico"
             value={email}
             onChangeText={setEmail}
@@ -68,41 +72,33 @@ const Login = ({ navigation }) => {
             autoCapitalize="none"
           />
           <TextInput
-            className='w-full h-12 px-4 mb-4 border border-gray-300 bg-white rounded-lg'
+            className="w-full h-12 px-4 mb-4 border border-gray-300 bg-gray-100 rounded-lg"
             placeholder="Clave"
             secureTextEntry
             value={password}
             onChangeText={setPassword}
           />
           <TouchableOpacity
-            className='w-full h-12 bg-[#007328] rounded-lg justify-center items-center'
+            className="w-full h-12 bg-[#007328] rounded-lg justify-center items-center"
             onPress={handleLogin}
             disabled={loading}
           >
             {loading ? (
               <ActivityIndicator size="small" color="#FFFFFF" />
             ) : (
-              <Text className='text-white text-lg font-semibold'>Iniciar Sesión</Text>
+              <Text className="text-white text-lg font-semibold">Iniciar Sesión</Text>
             )}
           </TouchableOpacity>
-          <TouchableOpacity className='mt-4'>
-            <Text className='text-[#007328]'>¿Olvidaste la clave?</Text>
+          <TouchableOpacity className="mt-4">
+            <Text className="text-[#007328]">¿Olvidaste la clave?</Text>
           </TouchableOpacity>
         </View>
       </View>
-      <View className='absolute bottom-8 w-full items-center'>
-        <Text className='font-bold text-green-700'>Criminal <Text className='font-light'>Scan</Text></Text>
+      <View className="absolute bottom-8 w-full items-center">
+        <Text className="font-bold text-green-700">Criminal <Text className="font-light">Scan</Text></Text>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
-const styles = StyleSheet.create({
-  errorText: {
-    color: 'red',
-    marginBottom: 10,
-  },
-});
-
 export default Login;
-

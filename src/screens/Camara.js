@@ -1,9 +1,10 @@
-import React, { useContext, useState } from 'react';
-import { View, Text, TouchableOpacity, Image, SafeAreaView, ScrollView } from 'react-native';
+import React, { useContext, useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, Image, SafeAreaView, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { styled } from 'nativewind';
 import { ApiKeyContext } from '../components/ApiKey';
 import { ScanContext } from '../components/ScanProvider';
+import { useFocusEffect } from '@react-navigation/native';
 
 const Camara = () => {
   const StyledSafeAreaView = styled(SafeAreaView);
@@ -14,38 +15,59 @@ const Camara = () => {
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [apiResponse, setApiResponse] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [cameraPermission, setCameraPermission] = useState(null);
+  const [galleryPermission, setGalleryPermission] = useState(null);
 
   //API
   const { apiKey } = useContext(ApiKeyContext);
   const { addScan } = useContext(ScanContext);
 
+  useEffect(() => {
+    const requestPermissions = async () => {
+      const cameraStatus = await ImagePicker.requestCameraPermissionsAsync();
+      const galleryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      setCameraPermission(cameraStatus.granted);
+      setGalleryPermission(galleryStatus.granted);
+    };
+    requestPermissions();
+  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // Limpia los datos cuando la pantalla se enfoca
+      setSelectedImage(null);
+      setApiResponse(null);
+    }, [])
+  );
+
   const uploadImage = async (option) => {
     try {
       let result;
       if (option === 1) {
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!galleryPermission) {
+          Alert.alert("Permisos de galería no concedidos");
+          return;
+        }
         result = await ImagePicker.launchImageLibraryAsync({
           allowsEditing: true,
           quality: 1,
         });
       } else {
-        let cameraResult = await ImagePicker.requestCameraPermissionsAsync({
+        if (!cameraPermission) {
+          Alert.alert("Permisos de cámara no concedidos");
+          return;
+        }
+        result = await ImagePicker.launchCameraAsync({
           allowsEditing: true,
           quality: 1,
         });
-        if (cameraResult.granted) {
-          result = await ImagePicker.launchCameraAsync({
-            allowsEditing: true,
-            quality: 1,
-          });
-        } else {
-          throw new Error("Permisos de cámara no concedidos");
-        }
       }
 
-      if (result && !result.cancelled && result.assets.length > 0) {
+      if (result && !result.canceled && result.assets.length > 0) {
         const imageUri = result.assets[0].uri;
         setSelectedImage(imageUri);
+        setIsLoading(true);
         await sendImageToApi(imageUri);
       } else {
         console.log("La selección de imagen fue cancelada o no se seleccionó ninguna imagen");
@@ -78,19 +100,51 @@ const Camara = () => {
       addScan({ imageUri, apiResponse: json });
     } catch (error) {
       console.error('Error al enviar la imagen a la API:', error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <ScrollView>
-      <StyledSafeAreaView className="flex-1 justify-center items-center p-6 w-full bg-gray-100">
-        {selectedImage && (
-          <StyledImage
-            source={{ uri: selectedImage }}
-            style={{ width: 200, height: 200, marginBottom: 20, borderRadius: 10 }}
-          />
-        )}
-        <StyledView className="flex flex-column justify-around w-full p-6 rounded-lg gap-6">
+      <StyledSafeAreaView className="flex-1 justify-center items-center p-6 w-full bg-white">
+        <StyledImage className='mt-6'
+          source={selectedImage ? { uri: selectedImage } : null}
+          style={{
+            width: 225,
+            height: 225,
+            marginBottom: 20,
+            borderRadius: 200,
+            backgroundColor: selectedImage ? 'transparent' : '#e0e0e0',
+          }}
+        />
+        <StyledView className="mt-6 p-6 bg-gray-100 rounded-lg  w-10/12">
+          <StyledText className="text-black text-lg text-center font-semibold mb-2">Antecedentes:</StyledText>
+          {isLoading ? (
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : (
+            <>
+              <StyledText className="text-gray-800">
+                <Text className="font-bold">Nombre:</Text> {apiResponse?.personaconantecedentes?.persona?.nombre || 'N/A'} {apiResponse?.personaconantecedentes?.persona?.apellido || ''}
+              </StyledText>
+              <StyledText className="text-gray-800">
+                <Text className="font-bold">Fecha de Nacimiento:</Text> {apiResponse?.personaconantecedentes?.persona?.fechaDeNacimiento || 'N/A'}
+              </StyledText>
+              <StyledText className="text-gray-800">
+                <Text className="font-bold">Dirección:</Text> {apiResponse?.personaconantecedentes?.persona?.direccion || 'N/A'}
+              </StyledText>
+              <StyledText className="text-gray-800">
+                <Text className="font-bold">Antecedentes:</Text>
+                {apiResponse?.antecedentes?.length > 0
+                  ? apiResponse.antecedentes.map((antecedente, idx) => (
+                    <Text key={idx}>{antecedente.descripcion}{'\n'}</Text>
+                  ))
+                  : 'N/A'}
+              </StyledText>
+            </>
+          )}
+        </StyledView>
+        <StyledView className="flex flex-column justify-around w-full p-6 rounded-2xl gap-6">
           <StyledTouchableOpacity onPress={() => uploadImage(0)} className="bg-green-600 p-4 rounded-lg shadow-lg">
             <StyledText className="text-white text-lg font-semibold text-center">Tomar Foto</StyledText>
           </StyledTouchableOpacity>
@@ -98,18 +152,6 @@ const Camara = () => {
             <StyledText className="text-white text-lg font-semibold text-center">Usar Galería</StyledText>
           </StyledTouchableOpacity>
         </StyledView>
-        {apiResponse && (
-          <StyledView className="mt-6 p-4 bg-white rounded-lg shadow-lg w-full">
-            <StyledText className="text-black text-lg font-semibold">Antecedentes:</StyledText>
-            <StyledText> Nombre: {apiResponse.personaconantecedentes.persona.nombre} </StyledText>
-            <StyledText> Apellido: {apiResponse.personaconantecedentes.persona.apellido}</StyledText>
-            <StyledText> Fecha de Nacimiento: {apiResponse.personaconantecedentes.persona.fechaDeNacimiento}</StyledText>
-            <StyledText> Dirección: {apiResponse.personaconantecedentes.persona.direccion}</StyledText>
-            <StyledText> Antecedentes: {apiResponse.antecedentes.map((antecedente, idx) => (
-              <Text key={idx}>{antecedente.descripcion}{'\n'}</Text>
-            ))}</StyledText>
-          </StyledView>
-        )}
       </StyledSafeAreaView>
     </ScrollView>
   );

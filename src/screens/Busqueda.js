@@ -8,13 +8,6 @@ const StyledSafeAreaView = styled(SafeAreaView);
 const StyledView = styled(View);
 const StyledText = styled(Text);
 
-const styles = StyleSheet.create({
-  criminalCard: {
-    height: 300,
-    width: 200,
-  },
-});
-
 const Busqueda = () => {
   const apiResponse = useContext(CriminalsContext);
 

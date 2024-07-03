@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { ApiKeyContext } from './ApiKey';
+import { ApiKeyContext } from '../components/ApiKey';
 
 export const CriminalsContext = createContext();
 

@@ -1,103 +1,119 @@
 import React, { useState } from 'react';
-import { SafeAreaView, View, Text, TouchableOpacity, Image, Modal, Pressable } from 'react-native';
+import { SafeAreaView, View, Text, TouchableOpacity, Modal, Pressable } from 'react-native';
 import { styled } from 'nativewind';
 import Feather from '@expo/vector-icons/Feather';
-import { BlurView } from 'expo-blur';
 
 const StyledSafeAreaView = styled(SafeAreaView);
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledTouchableOpacity = styled(TouchableOpacity);
-const StyledImage = styled(Image);
 const StyledModal = styled(Modal);
 const StyledPressable = styled(Pressable);
 
-const Perfil = ({ navigation }) => {
+const Perfil = () => {
   const [modalVisible, setModalVisible] = useState(false);
 
+  const usuario = {
+    grado: "Coronel",
+    codigoDePlaca: "11111111111",
+    persona: {
+      nombre: "Tomas",
+      apellido: "Poblete",
+      fechaDeNacimiento: "2001-08-20",
+      direccion: "7 oriente 13 norte #2473",
+      celular: "+569 79643904"
+    }
+  };
+
   return (
-    <StyledSafeAreaView className="flex-1 bg-white items-center">
-      <StyledView className="p-4 w-full items-center">
-        <StyledImage
-          source={{ uri: 'https://via.placeholder.com/200' }} // Reemplaza con tu URL de imagen de perfil
-          className="w-56 h-56 rounded-full mt-8" // Aumenta el tamaño de la imagen
-        />
-        <StyledText className="text-black text-3xl font-bold mt-8">
-          Matías Jesús Varas Aquín
-        </StyledText>
-
-        {/* Boton Configuracion de perfil */}
-        <StyledView className="w-full mt-6">
-          <StyledTouchableOpacity 
-            className="flex-row items-center bg-gray-100 rounded-2xl p-4 mt-2"
-            onPress={() => navigation.navigate('ConfiguracionPerfil')}
-          >
-            <StyledView className="w-10 h-10 bg-green-600 rounded-full items-center justify-center mr-4">
-              <Feather name="at-sign" size={24} color="white" />
-            </StyledView>
-            <StyledView>
-              <StyledText className="text-black font-bold text-lg">Configuración de Perfil</StyledText>
-              <StyledText className="text-gray-600">Ve y modifica tu usuario</StyledText>
-            </StyledView>
-          </StyledTouchableOpacity>
-
-          {/* Boton Privacidad */}
-          <StyledTouchableOpacity 
-            className="flex-row items-center bg-gray-100 rounded-2xl p-4 mt-2"
-            onPress={() => navigation.navigate('Privacidad')}
-          >
-            <StyledView className="w-10 h-10 bg-green-600 rounded-full items-center justify-center mr-4">
-              <Feather name="archive" size={24} color="white" />
-            </StyledView>
-            <StyledView>
-              <StyledText className="text-black font-bold text-lg">Privacidad</StyledText>
-              <StyledText className="text-gray-600">Cambia tu contraseña</StyledText>
-            </StyledView>
-          </StyledTouchableOpacity>
-
-          {/* Boton Acerca de */}
-          <StyledTouchableOpacity 
-            className="flex-row items-center bg-gray-100 rounded-2xl p-4 mt-2"
-            onPress={() => setModalVisible(true)}
-          >
-            <StyledView className="w-10 h-10 bg-green-600 rounded-full items-center justify-center mr-4">
-              <Feather name="info" size={24} color="white" />
-            </StyledView>
-            <StyledView>
-              <StyledText className="text-black font-bold text-lg">Acerca de</StyledText>
-              <StyledText className="text-gray-600">Datos de la aplicación</StyledText>
-            </StyledView>
-          </StyledTouchableOpacity>
+    <StyledSafeAreaView className="flex-1 bg-white items-center pt-5">
+      <StyledView className="w-11/12 bg-white rounded-2xl shadow-lg mt-6 mb-5">
+        <StyledView className="bg-green-600 rounded-t-2xl p-3">
+          <StyledText className="text-white text-lg font-bold text-center">Informacion</StyledText>
         </StyledView>
+        <StyledView className="p-4">
+          <StyledText className="text-black text-lg font-bold mb-2">{`${usuario.persona.nombre} ${usuario.persona.apellido}`}</StyledText>
+          <StyledView className="flex-row justify-between mb-1">
+            <StyledText className="font-bold">Grado:</StyledText>
+            <StyledText className="ml-2 flex-shrink">{usuario.grado}</StyledText>
+          </StyledView>
+          <StyledView className="flex-row justify-between mb-1">
+            <StyledText className="font-bold">Código de Placa:</StyledText>
+            <StyledText className="ml-2 flex-shrink">{usuario.codigoDePlaca}</StyledText>
+          </StyledView>
+          <StyledView className="flex-row justify-between mb-1">
+            <StyledText className="font-bold">Fecha de Nacimiento:</StyledText>
+            <StyledText className="ml-2 flex-shrink">{usuario.persona.fechaDeNacimiento}</StyledText>
+          </StyledView>
+          <StyledView className="flex-row justify-between mb-1">
+            <StyledText className="font-bold">Dirección:</StyledText>
+            <StyledText className="ml-2 flex-shrink">{usuario.persona.direccion}</StyledText>
+          </StyledView>
+          <StyledView className="flex-row justify-between mb-1">
+            <StyledText className="font-bold">Celular:</StyledText>
+            <StyledText className="ml-2 flex-shrink">{usuario.persona.celular}</StyledText>
+          </StyledView>
+        </StyledView>
+      </StyledView>
 
-        {/* Boton Cerrar Sesion */}
-        <StyledTouchableOpacity className="bg-green-600 rounded-2xl p-4 mt-2 w-full items-center">
-          <StyledText className="text-white font-bold text-lg">Cerrar Sesión</StyledText>
+      {/* Botones adicionales */}
+      <StyledView className="w-11/12">
+        <StyledTouchableOpacity className="flex-row items-center bg-gray-100 rounded-2xl p-4 mb-2">
+          <StyledView className="w-10 h-10 bg-green-600 rounded-full items-center justify-center mr-4">
+            <Feather name="at-sign" size={24} color="white" />
+          </StyledView>
+          <StyledView>
+            <StyledText className="font-bold">Configuración de Perfil</StyledText>
+            <StyledText className="text-gray-600">Ve y modifica tu usuario</StyledText>
+          </StyledView>
+        </StyledTouchableOpacity>
+
+        <StyledTouchableOpacity className="flex-row items-center bg-gray-100 rounded-2xl p-4 mb-2">
+          <StyledView className="w-10 h-10 bg-green-600 rounded-full items-center justify-center mr-4">
+            <Feather name="archive" size={24} color="white" />
+          </StyledView>
+          <StyledView>
+            <StyledText className="font-bold">Privacidad</StyledText>
+            <StyledText className="text-gray-600">Cambia tu contraseña</StyledText>
+          </StyledView>
+        </StyledTouchableOpacity>
+
+        <StyledTouchableOpacity className="flex-row items-center bg-gray-100 rounded-2xl p-4 mb-2" onPress={() => setModalVisible(true)}>
+          <StyledView className="w-10 h-10 bg-green-600 rounded-full items-center justify-center mr-4">
+            <Feather name="info" size={24} color="white" />
+          </StyledView>
+          <StyledView>
+            <StyledText className="font-bold">Acerca de</StyledText>
+            <StyledText className="text-gray-600">Datos de la aplicación</StyledText>
+          </StyledView>
         </StyledTouchableOpacity>
       </StyledView>
 
-      {/* Modal Acerca de */}
+      <StyledTouchableOpacity className="bg-green-600 rounded-2xl p-4 mt-3 w-11/12 items-center">
+        <StyledText className="text-white font-bold">Cerrar Sesión</StyledText>
+      </StyledTouchableOpacity>
+
+      {/* Pop Up Acerca de */}
       <StyledModal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <BlurView intensity={50} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <StyledView className="bg-white rounded-2xl p-6 w-3/4 items-center">
+        <StyledView className="flex-1 justify-center items-center">
+          <StyledView className="bg-white rounded-2xl p-6 w-3/4 items-center shadow-lg">
             <StyledText className="text-black text-xl font-bold mb-4">Acerca de</StyledText>
-            <StyledText className="text-gray-800 mb-4">Criminal Scan Copyright 2024 Cone y sus Zanahorias. All rights reserved.</StyledText>
-            <StyledPressable
-              className="bg-green-600 rounded-2xl p-4 w-full items-center"
-              onPress={() => setModalVisible(false)}
-            >
+            <StyledText className="text-gray-800">Criminal Scan Copyright 2024 Cone y sus Zanahorias. All rights reserved.</StyledText>
+            <StyledPressable className="bg-green-600 rounded-2xl p-4 mt-6 w-full items-center" onPress={() => setModalVisible(false)}>
               <StyledText className="text-white font-bold">Cerrar</StyledText>
             </StyledPressable>
           </StyledView>
-        </BlurView>
+        </StyledView>
       </StyledModal>
     </StyledSafeAreaView>
   );
 };
 
 export default Perfil;
+
+

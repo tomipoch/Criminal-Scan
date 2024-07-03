@@ -1,8 +1,9 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import React from 'react';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Text } from 'react-native';
+import Feather from '@expo/vector-icons/Feather';
 
 // Screens
 import Inicio from '../screens/Inicio';
@@ -11,15 +12,11 @@ import Camara from '../screens/Camara';
 import Perfil from '../screens/Perfil';
 import Asistencia from '../screens/Asistencia';
 import Login from '../screens/Login';
-import Bienvenida from '../screens/Bienvenida';
-import ConfiguracionPerfil from '../screens/ConfiguracionPerfil';
-import Privacidad from '../screens/Privacidad';
-
-// Iconos
-import Feather from '@expo/vector-icons/Feather';
 
 // API
-import ApiKey, { ApiKeyContext } from '../components/ApiKey';
+import { ApiCriminales } from '../components/ApiCriminales';
+import ApiKey from '../components/ApiKey';
+import {ScanProvider} from '../components/ScanProvider'
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -28,41 +25,7 @@ function InicioStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Inicio" component={Inicio} options={{ headerShown: true }} />
-      <Stack.Screen 
-        name="Asistencia" 
-        component={Asistencia} 
-        options={{
-          headerTitle: '',
-          headerBackTitle: 'Volver',
-          headerTransparent: true,
-        }} 
-      />
-    </Stack.Navigator>
-  );
-}
-
-function PerfilStack() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="PerfilMain" component={Perfil} options={{ headerShown: false }} />
-      <Stack.Screen 
-        name="ConfiguracionPerfil" 
-        component={ConfiguracionPerfil} 
-        options={{
-          headerTitle: '',
-          headerBackTitle: 'Volver',
-          headerTransparent: true,
-        }} 
-      />
-      <Stack.Screen 
-        name="Privacidad" 
-        component={Privacidad} 
-        options={{
-          headerTitle: '',
-          headerBackTitle: 'Volver',
-          headerTransparent: true,
-        }} 
-      />
+      <Stack.Screen name="Asistencia" component={Asistencia} options={{ headerTitle: 'Asistencia' }} />
     </Stack.Navigator>
   );
 }
@@ -76,7 +39,7 @@ function MyTabs() {
       }}
     >
       <Tab.Screen
-        name="InicioStackTab"
+        name="Inicio"
         component={InicioStack}
         options={{
           tabBarLabel: ({ focused }) => (
@@ -85,11 +48,11 @@ function MyTabs() {
           tabBarIcon: ({ focused }) => (
             <Feather name="home" size={24} color={focused ? 'green' : 'gray'} />
           ),
-          headerShown: false,
+          headerShown: false, // Oculta el header de Inicio en la navegación de pestañas
         }}
       />
       <Tab.Screen
-        name="BusquedaTab"
+        name="Busqueda"
         component={Busqueda}
         options={{
           tabBarLabel: ({ focused }) => (
@@ -101,7 +64,7 @@ function MyTabs() {
         }}
       />
       <Tab.Screen
-        name="CamaraTab"
+        name="Camara"
         component={Camara}
         options={{
           tabBarLabel: ({ focused }) => (
@@ -113,8 +76,8 @@ function MyTabs() {
         }}
       />
       <Tab.Screen
-        name="PerfilStackTab"
-        component={PerfilStack}
+        name="Perfil"
+        component={Perfil}
         options={{
           tabBarLabel: ({ focused }) => (
             <Text style={{ color: focused ? 'green' : 'gray' }}>Perfil</Text>
@@ -122,7 +85,6 @@ function MyTabs() {
           tabBarIcon: ({ focused }) => (
             <Feather name="user" size={24} color={focused ? 'green' : 'gray'} />
           ),
-          headerShown: false,
         }}
       />
     </Tab.Navigator>
@@ -130,27 +92,10 @@ function MyTabs() {
 }
 
 function MainStack() {
-  const { apiKey } = useContext(ApiKeyContext);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    if (apiKey) {
-      setIsLoggedIn(true);
-    }
-  }, [apiKey]);
-
   return (
     <Stack.Navigator>
-      {isLoggedIn ? (
-        <>
-          <Stack.Screen name="MyTabs" component={MyTabs} options={{ headerShown: false }} />
-        </>
-      ) : (
-        <>
-          <Stack.Screen name="Bienvenida" component={Bienvenida} options={{ headerShown: false }} />
-          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-        </>
-      )}
+      <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+      <Stack.Screen name="Home" component={MyTabs} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }
@@ -159,7 +104,11 @@ export default function Navigation() {
   return (
     <ApiKey>
       <NavigationContainer>
-        <MainStack />
+        <ApiCriminales>
+            <ScanProvider>
+              <MainStack />
+            </ScanProvider>
+        </ApiCriminales>
       </NavigationContainer>
     </ApiKey>
   );
