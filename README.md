@@ -1,4 +1,4 @@
-# Criminal-Scan
+# ![Icono de Criminal-Scan](assets/icon32.png) Criminal-Scan
 
 ![Icono de Criminal-Scan](assets/icon128.png)
 
